@@ -126,13 +126,13 @@ exports.loginUser = async (req, res, next) => {
                     result: userWithoutPassword,
                 });
             } else {
-                next(createError(400, "Email or Password not matched"));
+                next(createError(400, "Incorrect password. Please try again."));
             }
         } else {
-            next(createError(404, "User not found!!!"));
+            next(createError(404, "User not found! Please register an account first."));
         }
     } catch (error) {
-        next(createError(500, `something wrong: ${error.message}`));
+        next(createError(500, `Server error: ${error.message}`));
     }
 };
 

@@ -16,12 +16,18 @@ const Login = () => {
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors },
     } = useForm();
 
     const [isLoading, setIsLoading] = useState(false);
     let navigate = useNavigate();
     let location = useLocation();
+
+    const handleFillDemo = () => {
+        setValue("email", "solai@gmail.com");
+        setValue("password", "Solai@1234");
+    };
     let from = location.state?.from?.pathname || "/"; // to navigate right location after login
 
     const onSubmit = async (data) => {
@@ -103,9 +109,16 @@ const Login = () => {
                             </span>
                         )}
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex flex-col gap-2 items-center justify-center mt-4">
                         <button type="submit" disabled={isLoading}>
                             {isLoading ? "Loading..." : "Login"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleFillDemo}
+                            className="text-xs text-indigo-600 hover:underline bg-transparent border-none cursor-pointer mt-1"
+                        >
+                            ⚡ Auto-fill Sample Credentials
                         </button>
                     </div>
                 </form>
