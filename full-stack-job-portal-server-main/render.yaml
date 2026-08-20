@@ -1,0 +1,36 @@
+services:
+  # Render Web Service for Backend Express API
+  - type: web
+    name: job-portal-backend-api
+    env: node
+    region: oregon
+    rootDir: full-stack-job-portal-server-main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: COOKIE_NAME
+        value: job_portal_token
+      - key: COOKIE_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: DB_STRING
+        sync: false
+
+  # Render Static Site for Frontend React Client
+  - type: static
+    name: job-portal-frontend-client
+    rootDir: full-stack-job-portal-client-main
+    buildCommand: npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
