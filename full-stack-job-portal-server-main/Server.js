@@ -16,17 +16,14 @@ app.use("*", (req, res) => {
     res.status(404).json({ message: "Not Found" });
 });
 
-// Error Handeling Middleware(default synchronous error handling middleware from express)
+// Error Handling Middleware
 app.use((err, req, res, next) => {
     if (res.headersSent) {
-        next("There was a problem");
-    } else {
-        if (err.message) {
-            res.status(err.status || 500).send(err.message);
-        } else {
-            res.status(500).send("Something went wrong");
-        }
+        return next(err);
     }
+    const statusCode = err.status || err.statusCode || 500;
+    const message = typeof err.message === "string" ? err.message : "Something went wrong";
+    res.status(statusCode).json({ status: false, message });
 });
 
 app.listen(port, () => {

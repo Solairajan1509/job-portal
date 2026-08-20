@@ -54,10 +54,26 @@ const Login = () => {
             reset();
             navigate("/");
         } catch (error) {
+            const data = error?.response?.data;
+            let errMsg = "Login failed";
+            if (typeof data === "string") {
+                errMsg = data;
+            } else if (data?.message && typeof data.message === "string") {
+                errMsg = data.message;
+            } else if (Array.isArray(data?.errors)) {
+                errMsg = data.errors.map((e) => e.msg || e.message).join(", ");
+            } else if (Array.isArray(data?.error)) {
+                errMsg = data.error.map((e) => e.msg || e.message).join(", ");
+            } else if (typeof data?.error === "string") {
+                errMsg = data.error;
+            } else if (error?.message) {
+                errMsg = error.message;
+            }
+
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: error?.response?.data?.message || error?.response?.data || error?.message || "Login failed",
+                text: errMsg,
             });
         }
         setIsLoading(false);

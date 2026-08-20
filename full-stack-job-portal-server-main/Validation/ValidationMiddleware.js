@@ -4,7 +4,8 @@ const createError = require("http-errors");
 exports.inputValidationMiddleware = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ error: errors.array() });
+        const errorMsg = errors.array().map((err) => err.msg).join(", ");
+        return res.status(400).json({ status: false, message: errorMsg, errors: errors.array() });
     }
     next();
 };
