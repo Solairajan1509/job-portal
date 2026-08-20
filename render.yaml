@@ -1,0 +1,36 @@
+services:
+  # 1. Backend Web Service (Node.js & Express API)
+  - type: web
+    name: job-portal-backend-api
+    env: node
+    region: oregon
+    rootDir: full-stack-job-portal-server-main
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: COOKIE_NAME
+        value: job_portal_token
+      - key: COOKIE_SECRET
+        sync: false # Set in Render Dashboard
+      - key: JWT_SECRET
+        sync: false # Set in Render Dashboard
+      - key: DB_STRING
+        sync: false # Set in Render Dashboard (MongoDB Atlas URI)
+
+  # 2. Frontend Static Site (React + Vite Client)
+  - type: static
+    name: job-portal-frontend-client
+    rootDir: full-stack-job-portal-client-main
+    buildCommand: npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false # Point to deployed backend API URL (e.g. https://job-portal-backend-api.onrender.com/api/v1)
