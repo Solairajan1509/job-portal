@@ -26,9 +26,7 @@ const Login = () => {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
-        // password: A@1abcde
 
-        // posting
         try {
             const response = await axios.post(
                 `${API_URL}/auth/login`,
@@ -37,6 +35,9 @@ const Login = () => {
                     withCredentials: true,
                 }
             );
+            if (response?.data?.token) {
+                localStorage.setItem("token", response.data.token);
+            }
             Swal.fire({
                 icon: "success",
                 title: "Hurray...",
@@ -46,12 +47,11 @@ const Login = () => {
 
             reset();
             navigate("/");
-            // navigate("/dashboard");
         } catch (error) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: error?.response?.data,
+                text: error?.response?.data?.message || error?.response?.data || error?.message || "Login failed",
             });
         }
         setIsLoading(false);

@@ -109,22 +109,27 @@ exports.loginUser = async (req, res, next) => {
                 const one_day = 1000 * 60 * 60 * 24; //since token expire in 1day
 
                 const isProd = process.env.NODE_ENV === "production";
-                res.cookie(process.env.COOKIE_NAME, TOKEN, {
+                res.cookie(process.env.COOKIE_NAME || "token", TOKEN, {
                     expires: new Date(Date.now() + one_day),
                     secure: isProd, // Sent over HTTPS only in production
                     httpOnly: true, // Restricts access from client-side scripts
                     signed: true, // Helps keep the cookie secure
                     sameSite: isProd ? "None" : "Lax",
                 });
+
+                const { password: userPass, ...userWithoutPassword } = isUserExists.toObject();
+
                 res.status(200).json({
                     status: true,
                     message: "Login Successfully",
+                    token: TOKEN,
+                    result: userWithoutPassword,
                 });
             } else {
-                next(createError(500, "Email or Password not matched"));
+                next(createError(400, "Email or Password not matched"));
             }
         } else {
-            next(createError(500, "User not found!!!"));
+            next(createError(404, "User not found!!!"));
         }
     } catch (error) {
         next(createError(500, `something wrong: ${error.message}`));

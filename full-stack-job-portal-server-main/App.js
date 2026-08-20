@@ -14,7 +14,8 @@ app.use(
             if (!origin) return callback(null, true);
             return callback(null, true);
         },
-        methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+        methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
         credentials: true,
     })
 );

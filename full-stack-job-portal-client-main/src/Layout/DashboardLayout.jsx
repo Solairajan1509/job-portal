@@ -18,20 +18,24 @@ const DashboardLayout = () => {
         try {
             const response = await axios.post(
                 `${API_URL}/auth/logout`,
+                {},
                 { withCredentials: true }
             );
+            localStorage.removeItem("token");
             Swal.fire({
                 icon: "success",
                 title: "Logout...",
-                text: response?.data?.message,
+                text: response?.data?.message || "Logged out successfully",
             });
             handleFetchMe();
         } catch (error) {
+            localStorage.removeItem("token");
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: error?.response?.data,
+                text: error?.response?.data?.message || error?.response?.data || error?.message || "Logout failed",
             });
+            handleFetchMe();
         }
     };
 
