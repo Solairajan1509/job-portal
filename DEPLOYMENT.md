@@ -1,61 +1,42 @@
-# 🌐 Hosting Guide: Render & Netlify Deployment
+# 🚀 100% Free Hosting Guide: Deploying to Render ($0/month)
 
-This step-by-step guide explains how to host your Full-Stack Job Portal on **Render** (Backend API) and **Netlify / Render** (Frontend Web App).
-
----
-
-## Part 1: Deploy Backend API on Render (Node.js & Express)
-
-1. **Push your project to GitHub** (if not already done).
-2. Go to **[Render.com](https://render.com)** and sign in.
-3. Click **New +** → **Web Service**.
-4. Connect your GitHub repository.
-5. Configure Web Service settings:
-   - **Name**: `job-portal-backend-api`
-   - **Root Directory**: `full-stack-job-portal-server-main`
-   - **Runtime**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-6. Add **Environment Variables** in Render Dashboard:
-   - `NODE_ENV` = `production`
-   - `PORT` = `3000`
-   - `COOKIE_NAME` = `job_portal_token`
-   - `COOKIE_SECRET` = `your_cookie_secret_key`
-   - `JWT_SECRET` = `your_jwt_secret_key`
-   - `DB_STRING` = `mongodb+srv://<username>:<password>@cluster.mongodb.net/job-portal`
-7. Click **Create Web Service**. Render will deploy your backend and provide a live URL (e.g., `https://job-portal-backend-api.onrender.com`).
+You can host your entire **Full-Stack Job Portal completely FREE ($0/Month)** using:
+- 🟢 **Backend API**: Render Free Web Service (`plan: free`)
+- 🌐 **Frontend Client**: Render Free Static Site (Unlimited bandwidth & free SSL)
+- 🍃 **Database**: MongoDB Atlas M0 Free Shared Cluster (512 MB storage forever)
 
 ---
 
-## Part 2: Deploy Frontend on Netlify (React & Vite)
+## ⚡ 100% Free Deployment Steps via Render Blueprint
 
-### Option A: Netlify Deployment (Recommended for Frontend)
-1. Go to **[Netlify.com](https://netlify.com)** and sign in.
-2. Click **Add new site** → **Import an existing project**.
-3. Connect to GitHub and select your repository.
-4. Set deployment configuration:
-   - **Base directory**: `full-stack-job-portal-client-main`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `full-stack-job-portal-client-main/dist`
-5. Add **Environment Variable**:
-   - `VITE_API_URL` = `https://job-portal-backend-api.onrender.com/api/v1` *(replace with your deployed Render backend URL)*
-6. Click **Deploy Site**. Netlify will use the included [netlify.toml](file:///c:/Users/solai/OneDrive/Desktop/job-portal-main/full-stack-job-portal-client-main/netlify.toml) to handle React Router client-side routing.
+Render uses the updated [render.yaml](file:///c:/Users/solai/OneDrive/Desktop/job-portal-main/render.yaml) file which is pre-configured with `plan: free`.
+
+### Step 1: Push Code to GitHub
+```bash
+git add .
+git commit -m "Set Render deployment to Free Tier"
+git push origin main
+```
+
+### Step 2: Create Blueprint Instance on Render
+1. Go to **[Render Dashboard](https://dashboard.render.com/)** (Sign in or create a free account, no credit card required).
+2. Click **New +** → **Blueprint**.
+3. Connect your GitHub repository (`job-portal` or `Solairajan1509/job-portal`).
+4. Render will automatically detect `render.yaml` and select the **Free Plan** for both services:
+   - 🛠️ `job-portal-backend-api` (Web Service - **Free**)
+   - 🌐 `job-portal-frontend-client` (Static Site - **Free**)
+5. Set your **Free Environment Variables**:
+   - `DB_STRING`: Your free **MongoDB Atlas URI** (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/job-portal`)
+   - `COOKIE_SECRET`: Any random string (e.g., `my_secret_cookie_key`)
+   - `JWT_SECRET`: Any random string (e.g., `my_secret_jwt_key`)
+   - `VITE_API_URL`: `https://job-portal-backend-api.onrender.com/api/v1` (replace with your backend URL)
+6. Click **Apply**. Both services will build and deploy for **$0/month**!
 
 ---
 
-### Option B: Render Static Site Deployment
-1. In Render Dashboard, click **New +** → **Static Site**.
-2. Select repository and set:
-   - **Root Directory**: `full-stack-job-portal-client-main`
-   - **Build Command**: `npm run build`
-   - **Publish Directory**: `dist`
-3. Add **Rewrite Rule** in Render dashboard:
-   - Source: `/*` -> Destination: `/index.html` (Status: 200)
-4. Add `VITE_API_URL` environment variable pointing to backend API.
+## 💡 Important Notes About Render Free Tier
+- **Zero Cost**: No credit card is required to sign up or deploy.
+- **Backend Spin-down**: Free Web Services automatically spin down after 15 minutes of inactivity. When a new request arrives, it wakes up within ~30–50 seconds.
+- **Frontend Static Site**: Stays active 24/7 with fast response times and free SSL encryption (`https://`).
 
----
 
-## 🎯 Verification Checklist After Hosting
-- [ ] Backend API responds at `https://<your-backend-url>/` with "Job Hunter Server is running!".
-- [ ] Frontend opens cleanly at your custom Netlify / Render domain.
-- [ ] Test registration, login with candidate/recruiter/admin accounts.

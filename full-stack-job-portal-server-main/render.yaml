@@ -2,7 +2,8 @@ services:
   # 1. Backend Web Service (Node.js & Express API)
   - type: web
     name: job-portal-backend-api
-    env: node
+    runtime: node
+    plan: free
     region: oregon
     rootDir: full-stack-job-portal-server-main
     buildCommand: npm install
@@ -22,9 +23,8 @@ services:
         sync: false
 
   # 2. Frontend Static Site (React + Vite Client)
-  - type: web
+  - type: static
     name: job-portal-frontend-client
-    env: static
     rootDir: full-stack-job-portal-client-main
     buildCommand: npm run build
     staticPublishPath: dist
@@ -35,3 +35,4 @@ services:
     envVars:
       - key: VITE_API_URL
         sync: false
+
