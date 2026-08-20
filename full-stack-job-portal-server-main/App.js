@@ -33,10 +33,10 @@ const AdminRouter = require("./Router/AdminRouter");
 const ApplicationRouter = require("./Router/ApplicationRouter");
 
 // Connecting routes
-app.use("/api/v1/Jobs", authenticateUser, JobRouter);
-app.use("/api/v1/Users", authenticateUser, UserRouter);
-app.use("/api/v1/Auth", AuthRouter);
-app.use("/api/v1/Admin", authenticateUser, AdminRouter);
-app.use("/api/v1/Application", authenticateUser, ApplicationRouter);
+app.use(["/api/v1/Jobs", "/api/v1/jobs"], authenticateUser, JobRouter);
+app.use(["/api/v1/Users", "/api/v1/users"], authenticateUser, UserRouter);
+app.use(["/api/v1/Auth", "/api/v1/auth"], AuthRouter);
+app.use(["/api/v1/Admin", "/api/v1/admin"], authenticateUser, AdminRouter);
+app.use(["/api/v1/Application", "/api/v1/application"], authenticateUser, ApplicationRouter);
 
 module.exports = app;
