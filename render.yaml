@@ -22,8 +22,9 @@ services:
         sync: false # Set in Render Dashboard (MongoDB Atlas URI)
 
   # 2. Frontend Static Site (React + Vite Client)
-  - type: static
+  - type: web
     name: job-portal-frontend-client
+    env: static
     rootDir: full-stack-job-portal-client-main
     buildCommand: npm run build
     staticPublishPath: dist

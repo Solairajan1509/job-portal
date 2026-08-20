@@ -1,5 +1,5 @@
 services:
-  # Render Web Service for Backend Express API
+  # 1. Backend Web Service (Node.js & Express API)
   - type: web
     name: job-portal-backend-api
     env: node
@@ -21,9 +21,10 @@ services:
       - key: DB_STRING
         sync: false
 
-  # Render Static Site for Frontend React Client
-  - type: static
+  # 2. Frontend Static Site (React + Vite Client)
+  - type: web
     name: job-portal-frontend-client
+    env: static
     rootDir: full-stack-job-portal-client-main
     buildCommand: npm run build
     staticPublishPath: dist
