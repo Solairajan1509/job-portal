@@ -19,6 +19,8 @@ app.use(
         allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
         credentials: true,
     })
+);
+
 // Health Check Route for Render / Uptime Monitoring
 app.get("/", (req, res) => {
     res.status(200).send("Job Hunter Server is running!");
