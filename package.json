@@ -1,0 +1,14 @@
+{
+  "name": "job-portal-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full Stack Job Portal Application",
+  "scripts": {
+    "postinstall": "npm install --prefix full-stack-job-portal-server-main && npm install --prefix full-stack-job-portal-client-main",
+    "start": "npm start --prefix full-stack-job-portal-server-main",
+    "build": "npm run build --prefix full-stack-job-portal-client-main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
