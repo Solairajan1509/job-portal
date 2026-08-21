@@ -4,13 +4,12 @@ const app = require("./App");
 
 // DB Connection
 const DBConnectionHandler = require("./Utils/DBconnect");
-DBConnectionHandler();
+DBConnectionHandler().catch((err) => {
+    console.warn("Initial DB connection warning (will retry on incoming requests):", err.message);
+});
 
 const port = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-    res.send("Job Hunter Server is running!");
-});
 // 404 Error handler
 app.use("*", (req, res) => {
     res.status(404).json({ message: "Not Found" });

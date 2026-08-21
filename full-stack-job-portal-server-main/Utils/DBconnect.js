@@ -12,16 +12,12 @@ async function DBConnectionHandler() {
     const dbURI = process.env.DB_STRING;
 
     if (!dbURI) {
+        const errMsg =
+            "DB_STRING environment variable is not set. " +
+            "Please add your MongoDB Atlas connection string to the Render dashboard under Environment Variables.";
+        console.warn(errMsg);
         if (isProduction) {
-            const errMsg =
-                "FATAL: DB_STRING environment variable is not set. " +
-                "Please add your MongoDB Atlas connection string to the Render dashboard " +
-                "under Environment Variables for the job-portal-backend-api service.";
-            console.error(errMsg);
             throw new Error(errMsg);
-        } else {
-            // Local development fallback
-            console.warn("DB_STRING not set, using local MongoDB fallback.");
         }
     }
 
