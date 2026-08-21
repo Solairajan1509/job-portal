@@ -34,8 +34,13 @@ const Applicant = () => {
         console.log(jobs);
     }
 
-    if (!jobs?.length === 0) {
-        return <h2 className="">No job found</h2>;
+    if (!jobs || jobs?.length === 0) {
+        return (
+            <div className="mt-8 text-center text-gray-500">
+                <p className="text-lg font-medium">No job applications submitted yet.</p>
+                <p className="text-sm mt-1">Browse available jobs and submit your first application!</p>
+            </div>
+        );
     }
 
     return (

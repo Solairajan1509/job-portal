@@ -28,7 +28,7 @@ const Profile = () => {
                         <img src={user?.avatar || "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="avatar" className="avatar" />
                         <div className=" flex flex-col justify-center items-center mt-6">
                             <Link
-                                to={`/dashboard/edit-profile/${user?._id}}`}
+                                to={`/dashboard/edit-profile/${user?._id}`}
                                 className="flex items-center"
                             >
                                 <FiEdit />

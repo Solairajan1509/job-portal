@@ -16,8 +16,15 @@ const Login = () => {
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors },
     } = useForm();
+
+    const handleDemoLogin = (email, password) => {
+        setValue("email", email);
+        setValue("password", password);
+        onSubmit({ email, password });
+    };
 
     const [isLoading, setIsLoading] = useState(false);
     let navigate = useNavigate();
@@ -55,11 +62,15 @@ const Login = () => {
             } else if (data?.message && typeof data.message === "string") {
                 errMsg = data.message;
             } else if (Array.isArray(data?.errors)) {
-                errMsg = data.errors.map((e) => e.msg || e.message).join(", ");
+                errMsg = data.errors.map((e) => (typeof e === "string" ? e : e?.msg || e?.message || JSON.stringify(e))).join(", ");
             } else if (Array.isArray(data?.error)) {
-                errMsg = data.error.map((e) => e.msg || e.message).join(", ");
+                errMsg = data.error.map((e) => (typeof e === "string" ? e : e?.msg || e?.message || JSON.stringify(e))).join(", ");
             } else if (typeof data?.error === "string") {
                 errMsg = data.error;
+            } else if (data?.error && typeof data.error === "object") {
+                errMsg = data.error.message || JSON.stringify(data.error);
+            } else if (data && typeof data === "object" && data.message) {
+                errMsg = typeof data.message === "string" ? data.message : JSON.stringify(data.message);
             } else if (error?.message) {
                 errMsg = error.message;
             }
@@ -125,6 +136,7 @@ const Login = () => {
                         </button>
                     </div>
                 </form>
+
                 <div className="">
                     <p className="text-center text-[10px] font-semibold opacity-9 mt-3">
                         Don't have an account.

@@ -74,17 +74,13 @@ module.exports.getAllJobs = async (req, res, next) => {
         );
 
         // response
-        if (result.length !== 0) {
-            res.status(200).json({
-                status: true,
-                result,
-                totalJobs,
-                currentPage: page,
-                pageCount,
-            });
-        } else {
-            next(createError(500, "Job List is empty"));
-        }
+        res.status(200).json({
+            status: true,
+            result: result || [],
+            totalJobs: totalJobs || 0,
+            currentPage: page || 1,
+            pageCount: pageCount || 1,
+        });
     } catch (error) {
         next(createError(500, error.message));
     }
@@ -97,16 +93,11 @@ module.exports.getMyJobs = async (req, res, next) => {
         }).populate("createdBy", "username email");
         // here in populate only give the "username(selected filed) or only (-password) ommited fields" else showing error
 
-        if (result?.length) {
-            res.status(200).json({
-                status: true,
-                result,
-            });
-        } else {
-            res.status(400).json({
-                message: "Job not found",
-            });
-        }
+        res.status(200).json({
+            status: true,
+            result: result || [],
+            totalJobs: result?.length || 0,
+        });
     } catch (error) {
         next(createError(500, `something wrong: ${error.message}`));
     }

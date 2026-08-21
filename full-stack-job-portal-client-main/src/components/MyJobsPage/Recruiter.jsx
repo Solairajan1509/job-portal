@@ -89,8 +89,13 @@ const Recruiter = () => {
         // console.log(jobs);
     }
 
-    if (!jobs?.length === 0) {
-        return <h2 className="">No Application found</h2>;
+    if (!jobs || jobs?.length === 0) {
+        return (
+            <div className="mt-8 text-center text-gray-500">
+                <p className="text-lg font-medium">No candidate applications received yet.</p>
+                <p className="text-sm mt-1">When job seekers apply to your posted jobs, their applications will appear here for review.</p>
+            </div>
+        );
     }
 
     return (

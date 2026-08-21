@@ -54,17 +54,13 @@ module.exports.getCandidateAppliedJobs = async (req, res, next) => {
         );
 
         // response
-        if (result.length !== 0) {
-            res.status(200).json({
-                status: true,
-                result,
-                totalJobs,
-                currentPage: page,
-                pageCount: pageCount || 1,
-            });
-        } else {
-            next(createError(500, "Job List is empty"));
-        }
+        res.status(200).json({
+            status: true,
+            result: result || [],
+            totalJobs: totalJobs || 0,
+            currentPage: page || 1,
+            pageCount: pageCount || 1,
+        });
     } catch (error) {
         next(createError(500, error.message));
     }
@@ -118,15 +114,11 @@ module.exports.getRecruiterPostJobs = async (req, res, next) => {
             ApplicationModel.countDocuments(filter)
         ]);
 
-        if (result.length !== 0) {
-            res.status(200).json({
-                status: true,
-                totalJobs,
-                result,
-            });
-        } else {
-            return next(createError(404, "No Applications Found"));
-        }
+        res.status(200).json({
+            status: true,
+            totalJobs: totalJobs || 0,
+            result: result || [],
+        });
     } catch (error) {
         return next(createError(500, error.message));
     }

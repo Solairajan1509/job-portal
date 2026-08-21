@@ -25,7 +25,7 @@ const Register = () => {
 
     const onSubmit = async (data) => {
         // password: A@1abcde
-        const { username, email, password, confirmPassword } = data;
+        const { username, email, password, confirmPassword, role } = data;
 
         if (password !== confirmPassword) {
             setIsPasswordMatched({
@@ -35,7 +35,7 @@ const Register = () => {
             return;
         } else {
             setIsLoading(true);
-            const user = { username, email, password };
+            const user = { username, email, password, role: role || "user" };
             // posting
             try {
                 const response = await axios.post(
@@ -58,11 +58,15 @@ const Register = () => {
                 } else if (data?.message && typeof data.message === "string") {
                     errMsg = data.message;
                 } else if (Array.isArray(data?.errors)) {
-                    errMsg = data.errors.map((e) => e.msg || e.message).join(", ");
+                    errMsg = data.errors.map((e) => (typeof e === "string" ? e : e?.msg || e?.message || JSON.stringify(e))).join(", ");
                 } else if (Array.isArray(data?.error)) {
-                    errMsg = data.error.map((e) => e.msg || e.message).join(", ");
+                    errMsg = data.error.map((e) => (typeof e === "string" ? e : e?.msg || e?.message || JSON.stringify(e))).join(", ");
                 } else if (typeof data?.error === "string") {
                     errMsg = data.error;
+                } else if (data?.error && typeof data.error === "object") {
+                    errMsg = data.error.message || JSON.stringify(data.error);
+                } else if (data && typeof data === "object" && data.message) {
+                    errMsg = typeof data.message === "string" ? data.message : JSON.stringify(data.message);
                 } else if (error?.message) {
                     errMsg = error.message;
                 }
@@ -209,6 +213,19 @@ const Register = () => {
                                 {errors?.confirmPassword?.message}
                             </span>
                         )}
+                    </div>
+                    <div className="row">
+                        <label htmlFor="role">I want to register as</label>
+                        <select
+                            name="role"
+                            id="role"
+                            className="w-full border rounded px-3 py-2 text-sm bg-white text-gray-700 outline-none focus:border-blue-500"
+                            defaultValue="user"
+                            {...register("role")}
+                        >
+                            <option value="user">👤 Job Seeker (Apply for Jobs)</option>
+                            <option value="recruiter">🏢 Recruiter / Employer (Post & Manage Jobs)</option>
+                        </select>
                     </div>
                     <div className="flex justify-center">
                         <button type="submit" disabled={isLoading}>

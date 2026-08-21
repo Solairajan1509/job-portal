@@ -68,20 +68,19 @@ exports.addUser = async (req, res, next) => {
             next(createError(400, "Email Already exists"));
         } else {
             const isFirstUser = (await UserModel.countDocuments()) === 0;
-            req.body.role = isFirstUser ? "admin" : "user";
+            let assignedRole = "user";
+            if (isFirstUser) {
+                assignedRole = "admin";
+            } else if (data.role && ["recruiter", "user"].includes(data.role.toLowerCase())) {
+                assignedRole = data.role.toLowerCase();
+            }
+            data.role = assignedRole;
             const newUser = new UserModel(data);
             const result = await newUser.save();
 
-            // Exclude(remove) password field from the result
-            // const { password, ...resultWithoutPassword } = result.toObject();
-
-            // const tokenObj = { ID: result._id, email: result.email };
-            // const TOKEN = JWTGenerator(tokenObj, "1d");
             res.status(200).json({
                 status: true,
-                message: "Registered Successfully",
-                // result: resultWithoutPassword,
-                // TOKEN,
+                message: `Registered Successfully as ${assignedRole}`,
             });
         }
     } catch (error) {

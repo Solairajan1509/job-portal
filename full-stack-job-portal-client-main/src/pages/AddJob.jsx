@@ -37,6 +37,7 @@ const AddJob = () => {
 
     const onSubmit = async (data) => {
         setIsLoading(true);
+        const formattedDeadline = deadline instanceof Date ? deadline.toISOString().slice(0, 10) : new Date(deadline).toISOString().slice(0, 10);
         const newJob = {
             company: data?.company,
             position: data?.position,
@@ -45,15 +46,14 @@ const AddJob = () => {
             jobLocation: data?.location,
             jobVacancy: data?.vacancy,
             jobSalary: data?.salary,
-            jobDeadline: deadline + "",
+            jobDeadline: formattedDeadline,
             jobDescription: data?.description,
             jobSkills: skills,
             jobFacilities: facilities,
             jobContact: data?.contact,
         };
 
-        console.log(newJob)
-        // posting;
+        // posting
         try {
             const response = await axios.post(
                 `${API_URL}/jobs`,
@@ -64,21 +64,32 @@ const AddJob = () => {
             );
             Swal.fire({
                 icon: "success",
-                title: "Done...",
-                text: response?.data?.message,
+                title: "Job Posted!",
+                text: response?.data?.message || "Job vacancy has been published successfully.",
             });
 
             reset();
             setDeadline(new Date());
             setSkills([]);
             setFacilities([]);
-            // navigate("/");
         } catch (error) {
-            console.log(error);
+            const errData = error?.response?.data;
+            let errMsg = "Failed to add job";
+            if (typeof errData === "string") {
+                errMsg = errData;
+            } else if (errData?.message) {
+                errMsg = errData.message;
+            } else if (errData?.errors && Array.isArray(errData.errors)) {
+                errMsg = errData.errors.map((e) => e.msg || e.message).join(", ");
+            } else if (errData?.error) {
+                errMsg = typeof errData.error === "string" ? errData.error : JSON.stringify(errData.error);
+            } else if (error?.message) {
+                errMsg = error.message;
+            }
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: error?.response?.data,
+                text: errMsg,
             });
         }
         setIsLoading(false);

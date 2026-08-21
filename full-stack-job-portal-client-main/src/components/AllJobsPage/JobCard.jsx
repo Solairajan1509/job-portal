@@ -22,16 +22,46 @@ const JobCard = ({ job }) => {
     const { user } = useUserContext();
 
     const handleApply = async (id) => {
-        let currentDate = new Date();
-        let date = currentDate.toISOString().slice(0, 10);
+        if (!user || !user._id) {
+            Swal.fire({
+                icon: "info",
+                title: "Login Required",
+                text: "Please login to apply for this job.",
+            });
+            return;
+        }
+
+        let resumeUrl = user?.resume;
+        if (!resumeUrl) {
+            const { value } = await Swal.fire({
+                title: "Submit Application",
+                text: `Enter your resume link for ${job?.position} at ${job?.company}`,
+                input: "url",
+                inputLabel: "Resume / Portfolio URL",
+                inputPlaceholder: "https://your-resume-link.com/resume.pdf",
+                showCancelButton: true,
+                confirmButtonText: "Submit Application",
+                inputValidator: (val) => {
+                    if (!val) return "Resume URL is required!";
+                    if (!val.startsWith("http://") && !val.startsWith("https://")) {
+                        return "URL must start with http:// or https://";
+                    }
+                },
+            });
+            if (!value) return;
+            resumeUrl = value;
+        }
+
+        const currentDate = new Date().toISOString().slice(0, 10);
         const appliedJob = {
-            applicantId: user?._id,
-            recruiterId: job?.createdBy,
+            applicantId: user._id,
+            recruiterId: typeof job?.createdBy === "object" ? job?.createdBy?._id : job?.createdBy,
             jobId: id,
             status: "pending",
-            dateOfApplication: date,
-            resume: user?.resume || "",
+            dateOfApplication: currentDate,
+            resume: resumeUrl,
         };
+
         try {
             const response = await postHandler({
                 url: `${API_URL}/application/apply`,
@@ -39,24 +69,26 @@ const JobCard = ({ job }) => {
             });
             Swal.fire({
                 icon: "success",
-                title: "Hurray...",
-                text: response?.data?.message,
+                title: "Application Sent!",
+                text: response?.data?.message || "Your application was sent to the company recruiter.",
             });
         } catch (error) {
-            console.log(error);
-            if (error?.response?.data?.error) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: error?.response?.data?.error[0].msg,
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: error?.response?.data,
-                });
+            const data = error?.response?.data;
+            let errMsg = "Application failed";
+            if (typeof data === "string") {
+                errMsg = data;
+            } else if (data?.message) {
+                errMsg = data.message;
+            } else if (data?.error && Array.isArray(data.error)) {
+                errMsg = data.error.map((e) => e.msg || e.message).join(", ");
+            } else if (error?.message) {
+                errMsg = error.message;
             }
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: errMsg,
+            });
         }
     };
     return (

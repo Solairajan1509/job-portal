@@ -23,6 +23,10 @@ exports.checkRegisterInput = [
         .withMessage("Password is required")
         .isLength({ min: 8 })
         .withMessage("Password is too short (min 8)"),
+    check("role")
+        .optional()
+        .isIn(["user", "recruiter", "admin"])
+        .withMessage("Invalid role selected"),
 ];
 
 exports.checkLoginInput = [
