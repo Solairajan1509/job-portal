@@ -14,11 +14,11 @@ services:
       - key: COOKIE_NAME
         value: job_portal_token
       - key: COOKIE_SECRET
-        sync: false
+        value: job_portal_cookie_secret_2026
       - key: JWT_SECRET
-        sync: false
+        value: job_portal_secret_key_jwt_2026_super_secure
       - key: DB_STRING
-        sync: false
+        value: mongodb+srv://solairajansaro_db_user:solairajansaro_123@cluster0.s0ewk45.mongodb.net/job-portal?retryWrites=true&w=majority
 
   # 2. Frontend Static Site (React + Vite Client)
   - type: static
