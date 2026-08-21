@@ -18,8 +18,7 @@ services:
       - key: JWT_SECRET
         value: job_portal_secret_key_jwt_2026_super_secure
       - key: DB_STRING
-        value: mongodb+srv://solairajansaro_db_user:solairajansaro_123@cluster0.s0ewk45.mongodb.net/job-portal?retryWrites=true&w=majority
-
+       
   # 2. Frontend Static Site (React + Vite Client)
   - type: static
     name: job-portal-frontend-client
