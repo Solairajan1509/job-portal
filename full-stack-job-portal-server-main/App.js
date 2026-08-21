@@ -21,6 +21,20 @@ app.use(
     })
 );
 
+const DBConnectionHandler = require("./Utils/DBconnect");
+app.use(async (req, res, next) => {
+    try {
+        await DBConnectionHandler();
+        next();
+    } catch (error) {
+        return res.status(503).json({
+            status: false,
+            message: "Database connection failed. Please check DB_STRING environment variable or MongoDB connection status.",
+            error: error.message,
+        });
+    }
+});
+
 // Custom Middlewares
 const {
     authenticateUser,
