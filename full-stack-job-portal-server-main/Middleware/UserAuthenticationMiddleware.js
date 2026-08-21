@@ -3,25 +3,35 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../Model/UserModel");
 
 exports.authenticateUser = async (req, res, next) => {
-    let token = req.signedCookies?.[process.env.COOKIE_NAME] || req.cookies?.[process.env.COOKIE_NAME];
-
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
-        token = req.headers.authorization.split(" ")[1];
+    let cookieToken = req.signedCookies?.[process.env.COOKIE_NAME] || req.cookies?.[process.env.COOKIE_NAME];
+    if (typeof cookieToken !== "string" || !cookieToken) {
+        cookieToken = null;
     }
 
-    if (!token) {
+    let headerToken = null;
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+        headerToken = req.headers.authorization.split(" ")[1];
+    }
+
+    const tokensToTry = [cookieToken, headerToken].filter(Boolean);
+
+    if (tokensToTry.length === 0) {
         return next(createHttpError(401, "Unauthorized User"));
     }
 
-    try {
-        const { ID, role } = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await UserModel.findOne({ _id: ID, role }).select("-password");
-        if (!req.user) {
-            return next(createHttpError(401, "Unauthorized User: Account not found"));
+    for (const token of tokensToTry) {
+        try {
+            const { ID, role } = jwt.verify(token, process.env.JWT_SECRET);
+            const user = await UserModel.findOne({ _id: ID, role }).select("-password");
+            if (user) {
+                req.user = user;
+                return next();
+            }
+        } catch (error) {
+            // continue checking remaining token sources
         }
-        next();
-    } catch (error) {
-        return next(createHttpError(401, "Unauthorized User"));
     }
+
+    return next(createHttpError(401, "Unauthorized User"));
 };
 

@@ -12,17 +12,25 @@ const UserContext = ({ children }) => {
     const handleFetchMe = useCallback(async () => {
         setUserLoading(true);
         try {
+            const token = localStorage.getItem("token");
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
             const response = await axios.get(
                 `${API_URL}/auth/me`,
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    headers,
+                }
             );
             setUserError({ status: false, message: "" });
             setUser(response?.data?.result);
+            setUserLoading(false);
+            return response?.data?.result;
         } catch (error) {
             setUserError({ status: true, message: error?.message });
             setUser({ status: false });
+            setUserLoading(false);
+            return null;
         }
-        setUserLoading(false);
     }, []);
 
     useEffect(() => {

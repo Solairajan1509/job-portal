@@ -147,8 +147,8 @@ const Register = () => {
                                     message: "A valid email is required",
                                 },
                                 pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                                    message: "Enter a valid email",
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Enter a valid email address",
                                 },
                             })}
                         />
@@ -181,7 +181,7 @@ const Register = () => {
                                 pattern: {
                                     value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])/,
                                     message:
-                                        "At least one uppercase,one special char and one number",
+                                        "Must contain uppercase, lowercase, number and special character",
                                 },
                             })}
                         />
@@ -192,15 +192,15 @@ const Register = () => {
                         )}
                     </div>
                     <div className="row">
-                        <label htmlFor="password">Confirm Password</label>
+                        <label htmlFor="confirmPassword">Confirm Password</label>
                         <input
                             type="password"
-                            name="password"
+                            name="confirmPassword"
                             placeholder="Type Here"
                             {...register("confirmPassword", {
                                 required: {
                                     value: true,
-                                    message: "Password is required",
+                                    message: "Confirm password is required",
                                 },
                             })}
                         />

@@ -38,15 +38,15 @@ const Login = () => {
             if (response?.data?.token) {
                 localStorage.setItem("token", response.data.token);
             }
+            await handleFetchMe();
             Swal.fire({
                 icon: "success",
                 title: "Hurray...",
                 text: response?.data?.message,
             });
-            handleFetchMe();
 
             reset();
-            navigate("/");
+            navigate(from, { replace: true });
         } catch (error) {
             const data = error?.response?.data;
             let errMsg = "Login failed";
