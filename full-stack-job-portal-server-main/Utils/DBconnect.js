@@ -8,16 +8,12 @@ async function DBConnectionHandler() {
         return;
     }
 
-    if (!process.env.DB_STRING) {
-        const msg = "Warning: DB_STRING is not defined in environment.";
-        console.log(msg);
-        throw new Error(msg);
-    }
+    const dbURI = process.env.DB_STRING || "mongodb://127.0.0.1:27017/job-portal";
 
     try {
         if (!isConnecting) {
             isConnecting = true;
-            await mongoose.connect(process.env.DB_STRING, {
+            await mongoose.connect(dbURI, {
                 serverSelectionTimeoutMS: 5000,
             });
             console.log("db connected successfully");
