@@ -1,42 +1,49 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-let isConnecting = false;
+let connectPromise = null;
 
 async function DBConnectionHandler() {
     if (mongoose.connection.readyState === 1) {
-        return;
+        return mongoose.connection;
+    }
+
+    if (connectPromise && mongoose.connection.readyState === 2) {
+        return connectPromise;
     }
 
     const isProduction = process.env.NODE_ENV === "production";
-    const dbURI = process.env.DB_STRING;
+    const dbURI =
+        process.env.DB_STRING ||
+        "mongodb+srv://solairajansaro_db_user:solairajansaro_123@cluster0.s0ewk45.mongodb.net/job-portal?retryWrites=true&w=majority";
 
-    if (!dbURI) {
-        const errMsg =
-            "DB_STRING environment variable is not set. " +
-            "Please add your MongoDB Atlas connection string to the Render dashboard under Environment Variables.";
-        console.warn(errMsg);
-        if (isProduction) {
-            throw new Error(errMsg);
-        }
-    }
-
-    const connectionURI = dbURI || "mongodb://127.0.0.1:27017/job-portal";
-
-    try {
-        if (!isConnecting) {
-            isConnecting = true;
-            await mongoose.connect(connectionURI, {
-                serverSelectionTimeoutMS: 10000,
+    connectPromise = (async () => {
+        try {
+            console.log("Connecting to MongoDB Atlas...");
+            await mongoose.connect(dbURI, {
+                serverSelectionTimeoutMS: 15000,
             });
-            console.log("db connected successfully");
-            isConnecting = false;
+            console.log("db connected successfully to MongoDB Atlas");
+        } catch (atlasErr) {
+            console.warn("Atlas connection failed, trying fallback...", atlasErr.message);
+            if (!isProduction) {
+                try {
+                    await mongoose.connect("mongodb://127.0.0.1:27017/job-portal", {
+                        serverSelectionTimeoutMS: 5000,
+                    });
+                    console.log("Connected to local MongoDB fallback");
+                } catch (localErr) {
+                    connectPromise = null;
+                    throw new Error(`Database connection failed: ${atlasErr.message} (Local fallback also failed: ${localErr.message})`);
+                }
+            } else {
+                connectPromise = null;
+                throw new Error(`Atlas connection failed: ${atlasErr.message}`);
+            }
         }
-    } catch (err) {
-        isConnecting = false;
-        console.error(`DB connection error: ${err.message}`);
-        throw err;
-    }
+    })();
+
+    return connectPromise;
 }
 
 module.exports = DBConnectionHandler;

@@ -34,8 +34,7 @@ app.use(async (req, res, next) => {
     } catch (error) {
         return res.status(503).json({
             status: false,
-            message: "Database connection failed. Please check DB_STRING environment variable or MongoDB connection status.",
-            error: error.message,
+            message: error.message || "Database connection failed. Please check MongoDB connection status.",
         });
     }
 });
