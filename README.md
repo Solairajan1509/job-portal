@@ -5,7 +5,7 @@ A modern, high-performance **Full-Stack Job Portal Web Application** built with 
 ---
 
 ## 👔 Leadership Team
-- **Vikram K** – Co-Founder & CEO
+- **Solairajan S** – Co-Founder & CEO
 - **Selvin Jefre B** – Co-Founder & CEO
 - **Copyright**: © @2026 Job Portal
 
